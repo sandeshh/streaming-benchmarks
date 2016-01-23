@@ -27,12 +27,12 @@ public class Application implements StreamingApplication
   {
     // Create operators for each step
     // settings are applied by the platform using the config file.
-    KafkaSinglePortStringInputOperator kafkaInput = dag.addOperator("kafka", new KafkaSinglePortStringInputOperator());
+    KafkaSinglePortStringInputOperator kafkaInput = dag.addOperator("kafkaInput", new KafkaSinglePortStringInputOperator());
     DeserializeJSON deserializeJSON = dag.addOperator("deserialize", new DeserializeJSON());
     FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples() );
     FilterFields filterFields = dag.addOperator("filterFields", new FilterFields() );
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
-    CampaignProcessor campaignProcessor = dag.addOperator("redisOutput", new CampaignProcessor());
+    CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
 
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
@@ -41,7 +41,7 @@ public class Application implements StreamingApplication
     dag.addStream("deserialize_filterTuples", deserializeJSON.output, filterTuples.input);
     dag.addStream("filterTuples_filterFields", filterTuples.output, filterFields.input);
     dag.addStream("FilterFields_redisJoin", filterFields.output, redisJoin.input);
-    dag.addStream("redisJoin_output", redisJoin.output, campaignProcessor.input);
+    dag.addStream("campaignProcessor_output", redisJoin.output, campaignProcessor.input);
   }
 
   @Stateless

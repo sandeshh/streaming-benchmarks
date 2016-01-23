@@ -12,13 +12,13 @@
   </property>
 
   <property>
-    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.initialPartitionCount</name>
-    <value>1</value>
+    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.consumer.offset</name>
+    <value>earliest</value>
   </property>
 
   <property>
-    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.consumer.offset</name>
-    <value>earliest</value>
+    <name>dt.application.Apex_Benchmark.operator.kafkaInput.prop.initialPartitionCount</name>
+    <value>1</value>
   </property>
 
   <property>
