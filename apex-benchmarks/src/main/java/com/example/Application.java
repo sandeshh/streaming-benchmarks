@@ -142,7 +142,7 @@ public class Application implements StreamingApplication
       {
         String campaign_id = redisAdCampaignCache.execute(map.get("ad_id"));
 
-        if ( campaign_id == null || campaign_id.isEmpty() ) {
+        if (campaign_id == null || campaign_id.isEmpty()) {
           return;
         }
 
