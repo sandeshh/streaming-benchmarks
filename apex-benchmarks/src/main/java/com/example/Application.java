@@ -163,25 +163,6 @@ public class Application implements StreamingApplication
     }
   }
 
-    public CampaignProcessorCommon read (Kryo kryo, Input input, Class<CampaignProcessorCommon> type) {
-      ObjectInputStream in = null;
-      CampaignProcessorCommon e = null;
-
-      try {
-        in = new ObjectInputStream(input);
-         e = (CampaignProcessorCommon) in.readObject();
-        in.close();
-      } catch (IOException ioException) {
-        ioException.printStackTrace();
-      } catch (ClassNotFoundException e1) {
-        e1.printStackTrace();
-      }
-
-      return e;
-    }
-  }
-
-
   public static class CampaignProcessor extends BaseOperator
   {
     @FieldSerializer.Bind(JavaSerializer.class)
