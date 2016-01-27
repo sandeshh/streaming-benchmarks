@@ -217,10 +217,10 @@ public class Application implements StreamingApplication
       public void process(Map<String,String> map)
       {
         try {
-          campaignProcessorCommon.execute(map.get("campaign_id"), map.get("auto_id"));
+          campaignProcessorCommon.execute(map.get("campaign_id"), map.get("ad_id"));
         }
         catch ( Exception exception ) {
-           throw new RuntimeException( map.get("campaign_id") + map.get("auto_id") );
+           throw new RuntimeException( map.get("campaign_id") + map.get("ad_id") );
         }
       }
     };
