@@ -17,6 +17,7 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -162,18 +163,6 @@ public class Application implements StreamingApplication
     }
   }
 
-  public static class CustomSerializer extends Serializer<CampaignProcessorCommon> {
-    public void write (Kryo kryo, Output output, CampaignProcessorCommon object) {
-      ObjectOutputStream out = null;
-      try {
-        out = new ObjectOutputStream(output);
-        out.writeObject(object);
-        out.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-
     public CampaignProcessorCommon read (Kryo kryo, Input input, Class<CampaignProcessorCommon> type) {
       ObjectInputStream in = null;
       CampaignProcessorCommon e = null;
@@ -195,7 +184,7 @@ public class Application implements StreamingApplication
 
   public static class CampaignProcessor extends BaseOperator
   {
-    @FieldSerializer.Bind(CustomSerializer.class)
+    @FieldSerializer.Bind(JavaSerializer.class)
     private CampaignProcessorCommon campaignProcessorCommon;
     private String redisServerHost;
 
