@@ -87,19 +87,19 @@ public class Application implements StreamingApplication
       {
         try {
 
-          Map<String, String> map = new HashMap<>();
+          Tuple tuple = new Tuple();
 
-          map.put("ad_id", jsonObject.getString("ad_id") );
-          map.put("event_time", jsonObject.getString("event_time") );
+          tuple.ad_id = jsonObject.getString("ad_id");
+          tuple.event_ime = jsonObject.getString("event_time");
 
-          output.emit(map);
+          output.emit(tuple);
         } catch (JSONException e) {
           DTThrowable.wrapIfChecked(e);
         }
       }
     };
 
-    public transient DefaultOutputPort<Map<String,String>> output = new DefaultOutputPort();
+    public transient DefaultOutputPort<Tuple> output = new DefaultOutputPort();
   }
 
   @Stateless
@@ -138,24 +138,24 @@ public class Application implements StreamingApplication
       this.redisServerHost = redisServerHost;
     }
 
-    public transient DefaultInputPort<Map<String,String>> input = new DefaultInputPort<Map<String,String>>()
+    public transient DefaultInputPort<Tuple> input = new DefaultInputPort<Tuple>()
     {
       @Override
-      public void process(Map<String,String> map)
+      public void process(Tuple tuple)
       {
-        String campaign_id = redisAdCampaignCache.execute(map.get("ad_id"));
+        String campaign_id = redisAdCampaignCache.execute(tuple.ad_id);
 
         if (campaign_id == null || campaign_id.isEmpty()) {
           return;
         }
 
-        map.put("campaign_id", campaign_id);
+        tuple.compaign_id = campaign_id ;
 
-        output.emit(map);
+        output.emit(tuple);
       }
     };
 
-    public transient DefaultOutputPort<Map<String,String>> output = new DefaultOutputPort();
+    public transient DefaultOutputPort<Tuple> output = new DefaultOutputPort();
 
     @Override
     public void setup(Context.OperatorContext context)
@@ -211,16 +211,16 @@ public class Application implements StreamingApplication
       this.redisServerHost = redisServerHost;
     }
 
-    public transient DefaultInputPort<Map<String,String>> input = new DefaultInputPort<Map<String,String>>()
+    public transient DefaultInputPort<Tuple> input = new DefaultInputPort<Tuple>()
     {
       @Override
-      public void process(Map<String,String> map)
+      public void process(Tuple tuple)
       {
         try {
-          campaignProcessorCommon.execute(map.get("campaign_id"), map.get("ad_id"));
+          campaignProcessorCommon.execute(tuple.compaign_id, tuple.ad_id);
         }
         catch ( Exception exception ) {
-           throw new RuntimeException( map.get("campaign_id") + map.get("ad_id") );
+           throw new RuntimeException( tuple.toString() );
         }
       }
     };
@@ -230,6 +230,12 @@ public class Application implements StreamingApplication
       campaignProcessorCommon = new CampaignProcessorCommon(redisServerHost);
       this.campaignProcessorCommon.prepare();
     }
+  }
+
+  public static class Tuple {
+    public String ad_id ;
+    public String compaign_id ;
+    public String event_ime ;
   }
 
 }
