@@ -90,6 +90,8 @@ public class Application implements StreamingApplication
           tuple.ad_id = jsonObject.getString("ad_id");
           tuple.event_ime = jsonObject.getString("event_time");
 
+          if ( tuple.event_ime == null ) return ;
+
           output.emit(tuple);
         } catch (JSONException e) {
           DTThrowable.wrapIfChecked(e);
