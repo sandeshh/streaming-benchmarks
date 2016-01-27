@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 @ApplicationAnnotation(name = "Apex_Benchmark")
 public class Application implements StreamingApplication
@@ -149,7 +147,7 @@ public class Application implements StreamingApplication
           return;
         }
 
-        tuple.compaign_id = campaign_id ;
+        tuple.campaign_id = campaign_id ;
 
         output.emit(tuple);
       }
@@ -217,10 +215,10 @@ public class Application implements StreamingApplication
       public void process(Tuple tuple)
       {
         try {
-          campaignProcessorCommon.execute(tuple.compaign_id, tuple.ad_id);
+          campaignProcessorCommon.execute(tuple.campaign_id, tuple.event_ime);
         }
         catch ( Exception exception ) {
-           throw new RuntimeException( tuple.toString() );
+           throw new RuntimeException( tuple.campaign_id + tuple.event_ime );
         }
       }
     };
@@ -234,7 +232,7 @@ public class Application implements StreamingApplication
 
   public static class Tuple {
     public String ad_id ;
-    public String compaign_id ;
+    public String campaign_id;
     public String event_ime ;
   }
 
