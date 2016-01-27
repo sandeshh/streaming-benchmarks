@@ -5,7 +5,6 @@ package com.example;
 
 import benchmark.common.advertising.CampaignProcessorCommon;
 import benchmark.common.advertising.RedisAdCampaignCache;
-
 import com.datatorrent.api.*;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.api.annotation.Stateless;
@@ -20,6 +19,8 @@ import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,6 +31,8 @@ import java.util.Map;
 @ApplicationAnnotation(name = "Apex_Benchmark")
 public class Application implements StreamingApplication
 {
+  private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+
   @Override
   public void populateDAG(DAG dag, Configuration conf)
   {
@@ -186,12 +189,12 @@ public class Application implements StreamingApplication
         ioException.printStackTrace();
       } catch (ClassNotFoundException e1) {
         e1.printStackTrace();
+
       }
 
       return e;
     }
   }
-
 
   public static class CampaignProcessor extends BaseOperator
   {
@@ -214,7 +217,12 @@ public class Application implements StreamingApplication
       @Override
       public void process(Map<String,String> map)
       {
-        campaignProcessorCommon.execute(map.get("campaign_id"), map.get("auto_id"));
+        try {
+          campaignProcessorCommon.execute(map.get("campaign_id"), map.get("auto_id"));
+        }
+        catch ( NumberFormatException exception ) {
+            LOG.error(map.get("campaign_id") + " + " + map.get("auto_id") );
+        }
       }
     };
 
@@ -224,4 +232,5 @@ public class Application implements StreamingApplication
       this.campaignProcessorCommon.prepare();
     }
   }
+
 }
