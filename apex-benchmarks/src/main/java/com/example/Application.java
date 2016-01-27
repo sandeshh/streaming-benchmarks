@@ -189,7 +189,6 @@ public class Application implements StreamingApplication
         ioException.printStackTrace();
       } catch (ClassNotFoundException e1) {
         e1.printStackTrace();
-
       }
 
       return e;
@@ -220,8 +219,8 @@ public class Application implements StreamingApplication
         try {
           campaignProcessorCommon.execute(map.get("campaign_id"), map.get("auto_id"));
         }
-        catch ( NumberFormatException exception ) {
-            LOG.error(map.get("campaign_id") + " + " + map.get("auto_id") );
+        catch ( Exception exception ) {
+           throw new RuntimeException( map.get("campaign_id") + map.get("auto_id") );
         }
       }
     };
