@@ -12,10 +12,18 @@ import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
 import com.datatorrent.netlet.util.DTThrowable;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -154,8 +162,40 @@ public class Application implements StreamingApplication
     }
   }
 
+  public static class CustomSerializer extends Serializer<CampaignProcessorCommon> {
+    public void write (Kryo kryo, Output output, CampaignProcessorCommon object) {
+      ObjectOutputStream out = null;
+      try {
+        out = new ObjectOutputStream(output);
+        out.writeObject(object);
+        out.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    public CampaignProcessorCommon read (Kryo kryo, Input input, Class<CampaignProcessorCommon> type) {
+      ObjectInputStream in = null;
+      CampaignProcessorCommon e = null;
+
+      try {
+        in = new ObjectInputStream(input);
+         e = (CampaignProcessorCommon) in.readObject();
+        in.close();
+      } catch (IOException ioException) {
+        ioException.printStackTrace();
+      } catch (ClassNotFoundException e1) {
+        e1.printStackTrace();
+      }
+
+      return e;
+    }
+  }
+
+
   public static class CampaignProcessor extends BaseOperator
   {
+    @FieldSerializer.Bind(CustomSerializer.class)
     private CampaignProcessorCommon campaignProcessorCommon;
     private String redisServerHost;
 
