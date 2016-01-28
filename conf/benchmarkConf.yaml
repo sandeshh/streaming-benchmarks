@@ -2,15 +2,15 @@
 # Licensed under the terms of the Apache License 2.0. Please see LICENSE file in the project root for terms.
 
 kafka.brokers:
-    - "localhost"
+    - "node30:9092,node32:9092,node34:9092,node36:9092"
 
 zookeeper.servers:
-    - "localhost"
+    - "node21:2181"
 
 kafka.port: 9092
 zookeeper.port: 2181
-redis.host: "localhost"
-kafka.topic: "ad-events"
+redis.host: "node35"
+kafka.topic: "benchmark_v6_1"
 kafka.partitions: 1
 
 process.hosts: 1
