@@ -11,20 +11,11 @@ import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
 import com.datatorrent.netlet.util.DTThrowable;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 @ApplicationAnnotation(name = "Apex_Benchmark")
 public class Application implements StreamingApplication
