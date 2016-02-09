@@ -10,7 +10,6 @@ import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
-import com.datatorrent.lib.io.ConsoleOutputOperator;
 import com.datatorrent.netlet.util.DTThrowable;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jettison.json.JSONException;
@@ -34,14 +33,11 @@ public class Application implements StreamingApplication
     FilterFields filterFields = dag.addOperator("filterFields", new FilterFields() );
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
     CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
-    ConsoleOutputOperator consoleOutputOperator = dag.addOperator("console", new ConsoleOutputOperator());
 
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
     // Connect the Ports in the Operators
-    DAG.StreamMeta connect = dag.addStream("deserialize", kafkaInput.outputPort, deserializeJSON.input);
-    connect.addSink(consoleOutputOperator.input);
-
+    dag.addStream("deserialize", kafkaInput.outputPort, deserializeJSON.input);
     dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input);
     dag.addStream("filterFields", filterTuples.output, filterFields.input);
     dag.addStream("redisJoin", filterFields.output, redisJoin.input);
@@ -105,12 +101,15 @@ public class Application implements StreamingApplication
   @Stateless
   public static class FilterTuples extends BaseOperator
   {
+    private static final Logger LOG = LoggerFactory.getLogger(FilterTuples.class);
+
     public transient DefaultInputPort<JSONObject> input = new DefaultInputPort<JSONObject>()
     {
       @Override
       public void process(JSONObject jsonObject)
       {
         try {
+          LOG.info(" Message : {} ", input.toString());
           if (  jsonObject.getString("event_type").equals("view") ) {
             output.emit(jsonObject);
           }
