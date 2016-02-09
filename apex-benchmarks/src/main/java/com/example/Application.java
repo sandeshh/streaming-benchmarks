@@ -10,6 +10,7 @@ import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.api.annotation.Stateless;
 import com.datatorrent.common.util.BaseOperator;
 import com.datatorrent.contrib.kafka.KafkaSinglePortStringInputOperator;
+import com.datatorrent.lib.io.ConsoleOutputOperator;
 import com.datatorrent.netlet.util.DTThrowable;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jettison.json.JSONException;
@@ -33,15 +34,23 @@ public class Application implements StreamingApplication
     FilterFields filterFields = dag.addOperator("filterFields", new FilterFields() );
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
     CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
+    ConsoleOutputOperator consoleOutputOperator = dag.addOperator("console", new ConsoleOutputOperator());
 
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
     // Connect the Ports in the Operators
-    dag.addStream("kafka_deserialize", kafkaInput.outputPort, deserializeJSON.input);
-    dag.addStream("deserialize_filterTuples", deserializeJSON.output, filterTuples.input);
-    dag.addStream("filterTuples_filterFields", filterTuples.output, filterFields.input);
-    dag.addStream("FilterFields_redisJoin", filterFields.output, redisJoin.input);
-    dag.addStream("campaignProcessor_output", redisJoin.output, campaignProcessor.input);
+    DAG.StreamMeta connect = dag.addStream("deserialize", kafkaInput.outputPort, deserializeJSON.input);
+    connect.addSink(consoleOutputOperator.input);
+
+    dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input);
+    dag.addStream("filterFields", filterTuples.output, filterFields.input);
+    dag.addStream("redisJoin", filterFields.output, redisJoin.input);
+    dag.addStream("output", redisJoin.output, campaignProcessor.input);
+
+    dag.setInputPortAttribute(deserializeJSON.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(filterTuples.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(redisJoin.input, Context.PortContext.PARTITION_PARALLEL, true);
   }
 
   @Stateless
@@ -158,7 +167,6 @@ public class Application implements StreamingApplication
 
   public static class CampaignProcessor extends BaseOperator
   {
-
     private transient CampaignProcessorCommon campaignProcessorCommon;
     private String redisServerHost;
 
