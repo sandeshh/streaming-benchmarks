@@ -35,7 +35,7 @@ public class Application implements StreamingApplication
     CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
 
     kafkaInput.getConsumer().setTopic("input");
-    kafkaInput.getConsumer().setZookeeper("node1.morado.com:2181");
+    kafkaInput.getConsumer().setZookeeper("node21.morado.com:2181");
     kafkaInput.getConsumer().setInitialOffset("latest");
 
     kafkaInput.setInitialPartitionCount(2);
