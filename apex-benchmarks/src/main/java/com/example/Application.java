@@ -37,6 +37,7 @@ public class Application implements StreamingApplication
     kafkaInput.getConsumer().setTopic("input");
     kafkaInput.getConsumer().setZookeeper("node21.morado.com:2181");
     kafkaInput.getConsumer().setInitialOffset("latest");
+    kafkaInput.getConsumer().initBrokers();
 
     kafkaInput.setInitialPartitionCount(2);
 
