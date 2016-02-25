@@ -42,6 +42,12 @@ public class Application implements StreamingApplication
     dag.addStream("filterFields", filterTuples.output, filterFields.input);
     dag.addStream("redisJoin", filterFields.output, redisJoin.input);
     dag.addStream("output", redisJoin.output, campaignProcessor.input);
+
+    dag.setInputPortAttribute(deserializeJSON.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(filterTuples.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(redisJoin.input, Context.PortContext.PARTITION_PARALLEL, true);
+
   }
 
   @Stateless
@@ -119,7 +125,7 @@ public class Application implements StreamingApplication
 
   public static class RedisJoin extends BaseOperator
   {
-    private RedisAdCampaignCache redisAdCampaignCache;
+    private transient RedisAdCampaignCache redisAdCampaignCache;
     private String redisServerHost;
 
     public String getRedisServerHost()
