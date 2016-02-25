@@ -36,7 +36,8 @@ public class Application implements StreamingApplication
 
     kafkaInput.getConsumer().setTopic("input");
     kafkaInput.getConsumer().setZookeeper("node1.morado.com:2181");
-    kafkaInput.getConsumer().setInitialOffset("earliest");
+    kafkaInput.getConsumer().setInitialOffset("latest");
+
     kafkaInput.setInitialPartitionCount(2);
 
     redisJoin.setRedisServerHost("node35.morado.com");
