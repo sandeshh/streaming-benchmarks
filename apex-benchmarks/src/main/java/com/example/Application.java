@@ -34,16 +34,6 @@ public class Application implements StreamingApplication
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
     CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
 
-    kafkaInput.getConsumer().setTopic("input");
-    kafkaInput.getConsumer().setZookeeper("node21.morado.com:2181");
-    kafkaInput.getConsumer().setInitialOffset("latest");
-    kafkaInput.getConsumer().initBrokers();
-
-    kafkaInput.setInitialPartitionCount(2);
-
-    redisJoin.setRedisServerHost("node35.morado.com");
-    campaignProcessor.setRedisServerHost("node35.morado.com");
-
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
     // Connect the Ports in the Operators

@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
 
+    -  <property>
+        <name>dt.operator.kafkaInput.prop.consumer.topic</name>
+        <value>input2</value>
+      </property>
 
+      <property>
+        <name>dt.operator.kafkaInput.prop.consumer.zookeeper</name>
+        <value>node21.morado.com:2181</value>
+      </property>
+
+      <property>
+        <name>dt.operator.kafkaInput.prop.consumer.offset</name>
+        <value>latest</value>
+      </property>
+
+      <property>
+        <name>dt.operator.kafkaInput.prop.initialPartitionCount</name>
+        <value>6</value>
+      </property>
+
+      <property>
+        <name>dt.operator.redisJoin.redisServerHost</name>
+        <value>node35.morado.com</value>
+      </property>
+
+      <property>
+        <name>dt.operator.campaignProcessor.redisServerHost</name>
+        <value>node35.morado.com</value>
+     </property>
 </configuration>
