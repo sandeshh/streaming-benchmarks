@@ -42,6 +42,10 @@ public class Application implements StreamingApplication
     dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.THREAD_LOCAL);;
     dag.addStream("redisJoin", filterFields.output, redisJoin.input);
     dag.addStream("output", redisJoin.output, campaignProcessor.input);
+
+    dag.setInputPortAttribute(deserializeJSON.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(filterTuples.input, Context.PortContext.PARTITION_PARALLEL, true);
+    dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
   }
 
   @Stateless
