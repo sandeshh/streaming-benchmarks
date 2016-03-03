@@ -37,9 +37,9 @@ public class Application implements StreamingApplication
     // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
     // Connect the Ports in the Operators
-    dag.addStream("deserialize", kafkaInput.outputPort, deserializeJSON.input).setLocality(DAG.Locality.THREAD_LOCAL);
-    dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input).setLocality(DAG.Locality.THREAD_LOCAL);;
-    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.THREAD_LOCAL);;
+    dag.addStream("deserialize", kafkaInput.outputPort, deserializeJSON.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
+    dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
+    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
     dag.addStream("redisJoin", filterFields.output, redisJoin.input);
     dag.addStream("output", redisJoin.output, campaignProcessor.input);
 
