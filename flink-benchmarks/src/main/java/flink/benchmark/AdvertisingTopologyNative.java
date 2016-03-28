@@ -59,13 +59,13 @@ public class AdvertisingTopologyNative {
             env.enableCheckpointing(flinkBenchmarkParams.getLong("flink.checkpoint-interval", 1000));
         }
         // set default parallelism for all operators (recommended value: number of available worker CPU cores in the cluster (hosts * cores))
-        env.setParallelism(hosts * cores);
+        env.setParallelism(1);
 
         DataStream<String> messageStream = env
                 .addSource(new FlinkKafkaConsumer082<String>(
                         flinkBenchmarkParams.getRequired("topic"),
                         new SimpleStringSchema(),
-                        flinkBenchmarkParams.getProperties())).setParallelism(Math.min(hosts * cores, kafkaPartitions));
+                        flinkBenchmarkParams.getProperties())).setParallelism(1);
 
         messageStream
                 .rebalance()
@@ -219,7 +219,7 @@ public class AdvertisingTopologyNative {
     public static String listOfStringToString(List<String> list, String port) {
         String val = "";
         for(int i=0; i<list.size(); i++) {
-            val += list.get(i) + ":" + port;
+            val += list.get(i);
             if(i < list.size()-1) {
                 val += ",";
             }
