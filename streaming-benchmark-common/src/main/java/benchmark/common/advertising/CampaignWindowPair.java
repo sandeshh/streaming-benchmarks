@@ -4,9 +4,9 @@
  */
 package benchmark.common.advertising;
 
-class CampaignWindowPair {
-    String campaign;
-    Window window;
+public class CampaignWindowPair {
+    public String campaign;
+    public Window window;
 
     public CampaignWindowPair(String campaign, Window window) {
         this.campaign = campaign;

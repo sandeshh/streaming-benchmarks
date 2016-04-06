@@ -23,7 +23,7 @@ public class ApplicationWithGenerator implements StreamingApplication {
         FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples() );
         FilterFields filterFields = dag.addOperator("filterFields", new FilterFields() );
         RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
-        CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
+        CampaignProcessorWithApexWindow campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessorWithApexWindow());
 
         // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
