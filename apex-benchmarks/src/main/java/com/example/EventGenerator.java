@@ -6,11 +6,11 @@ import com.datatorrent.api.InputOperator;
 import com.datatorrent.common.util.BaseOperator;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -24,7 +24,10 @@ public class EventGenerator extends BaseOperator implements InputOperator {
     private static String pageID = UUID.randomUUID().toString();
     private static String userID = UUID.randomUUID().toString();
     private static final String[] eventTypes = new String[]{"view", "click", "purchase"};
-    private String mappingFile = "/user/sandesh/test.txt";
+    private String mappingFile = "/user/sandesh/test2.txt";
+    private String redis = "node35" ;
+    private Integer numberOfCampaigns = 100 ;
+    private Integer numberOfAds = 10 ;
 
     public String getMappingFile() {
         return mappingFile;
@@ -40,9 +43,39 @@ public class EventGenerator extends BaseOperator implements InputOperator {
         try {
 
             Path filePath = new Path(mappingFile);
+
             Configuration configuration = new Configuration();
             FileSystem fs;
             fs = FileSystem.newInstance(filePath.toUri(), configuration);
+
+            if (!fs.exists(filePath)) {
+
+                FSDataOutputStream outputStream = fs.create(filePath, false);
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+
+                for (int i = 0; i < numberOfCampaigns; ++i) {
+
+                    String campaignID = UUID.randomUUID().toString();
+
+                    for (int j = 0; j < numberOfAds; ++j) {
+
+                        String adID = UUID.randomUUID().toString();
+
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(campaignID).append(" ").append(adID).append("\n");
+
+                        bufferedWriter.write(stringBuilder.toString());
+                    }
+                }
+
+                bufferedWriter.close();
+                outputStream.close();
+
+                RedisHelper redisHelper = new RedisHelper();
+                redisHelper.init(redis);
+                redisHelper.fillDB(mappingFile);
+            }
+
             FSDataInputStream inputStream = fs.open(filePath);
             BufferedReader bufferedReader;
 
