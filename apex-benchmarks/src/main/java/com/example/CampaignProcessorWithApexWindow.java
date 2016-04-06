@@ -22,8 +22,8 @@ import java.util.UUID;
 public class CampaignProcessorWithApexWindow extends BaseOperator {
 
     private static final Logger LOG = LoggerFactory.getLogger(CampaignProcessorCommon.class);
-    private Jedis jedis;
-    private Jedis flush_jedis;
+    private transient Jedis jedis;
+    private transient Jedis flush_jedis;
     private Long lastWindowMillis;
     // Bucket -> Campaign_id -> Window
     private LRUHashMap<Long, HashMap<String, Window>> campaign_windows;
