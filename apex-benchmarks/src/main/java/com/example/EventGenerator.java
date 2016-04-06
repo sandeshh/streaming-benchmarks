@@ -88,7 +88,7 @@ public class EventGenerator extends BaseOperator implements InputOperator {
                 ad_id.add(mapping[1]);
             }
         } catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
     }
 
