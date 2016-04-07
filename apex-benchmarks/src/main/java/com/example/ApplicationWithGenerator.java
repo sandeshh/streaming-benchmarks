@@ -39,6 +39,6 @@ public class ApplicationWithGenerator implements StreamingApplication {
         dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
         dag.setInputPortAttribute(redisJoin.input, Context.PortContext.PARTITION_PARALLEL, true);
 
-        // dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(5));
+        dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(5));
     }
 }

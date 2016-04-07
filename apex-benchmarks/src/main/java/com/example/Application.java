@@ -29,12 +29,10 @@ public class Application implements StreamingApplication
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
     CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
 
-    // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
-
     // Connect the Ports in the Operators
     dag.addStream("deserialize", kafkaInput.outputPort, deserializeJSON.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
     dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
-    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
+    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.THREAD_LOCAL);
     dag.addStream("redisJoin", filterFields.output, redisJoin.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
     dag.addStream("output", redisJoin.output, campaignProcessor.input);
 
