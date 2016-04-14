@@ -21,7 +21,7 @@ public class FilterFields extends BaseOperator
                 Tuple tuple = new Tuple();
 
                 tuple.ad_id = jsonObject.getString("ad_id");
-                tuple.event_ime = jsonObject.getString("event_time");
+                tuple.event_ime = Long.parseLong(jsonObject.getString("event_time"));
 
                 if ( tuple.event_ime == null ) return ;
 

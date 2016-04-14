@@ -6,5 +6,5 @@ package com.example;
 public class Tuple {
     public String ad_id ;
     public String campaign_id;
-    public String event_ime ;
+    public Long event_ime ;
 }

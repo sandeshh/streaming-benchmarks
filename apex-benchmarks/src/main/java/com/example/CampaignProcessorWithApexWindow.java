@@ -66,7 +66,7 @@ public class CampaignProcessorWithApexWindow extends BaseOperator {
         {
             try {
 
-                Long timeBucket = Long.parseLong(tuple.event_ime) / time_divisor;
+                Long timeBucket = tuple.event_ime / time_divisor;
                 Window window = getWindow(timeBucket, tuple.campaign_id);
                 window.seenCount++;
 
