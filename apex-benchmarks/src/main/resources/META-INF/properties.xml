@@ -1,5 +1,79 @@
 <?xml version="1.0"?>
 <configuration>
-
+  <!-- Settings for all the apps -->
+  <property>
+    <name>dt.operator.*.attr.MEMORY_MB</name>
+    <value>4096</value>
+  </property>
+  <property>
+    <name>dt.attr.CONTAINER_JVM_OPTIONS</name>
+    <value>-Xmx6g -server -Dlog4j.debug=true -Xloggc:&lt;LOG_DIR&gt;/gc.log -verbose:gc -XX:+PrintGCDateStamps</value>
+  </property>
+  
+    <property>
+    <name>dt.application.TelecomDemoV2.csoutputmask</name>
+    <value>0</value>
+  </property>
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.StoreServiceKPIs.fileStore.basePathPrefix</name>
+    <value>CS/Store</value>
+  </property>
+  <!-- 
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.Store.embeddableQueryInfoProvider.uri</name>
+    <value>ws://node20.morado.com:10001/pubsub</value>
+  </property>
+  -->
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.StoreServiceKPIs.embeddableQueryInfoProvider.topic</name>
+    <value>CSTopic-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.QueryResult.topic</name>
+    <value>CSQueryResult-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.ComputeNumOfServiceCalls.embeddableQueryInfoProvider.topic</name>
+    <value>ServiceCallQuery-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.ServiceCallQueryResult.topic</name>
+    <value>ServiceCallQueryResult-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.ComputeSatisfactionRatings.embeddableQueryInfoProvider.topic</name>
+    <value>SatisfactionQuery-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.SatisfactionQueryResult.topic</name>
+    <value>SatisfactionQueryResult-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.ComputeWaitTimes.embeddableQueryInfoProvider.topic</name>
+    <value>WaittimeQuery-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.TelecomDemoV2.operator.WaittimeQueryResult.topic</name>
+    <value>WaittimeQueryResult-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  
+  <property>
+    <name>dt.application.DimensionComputation.operator.Generator.batchSleepTime</name>
+    <value>10</value>
+  </property>
+  <property>
+    <name>dt.application.DimensionComputation.operator.Store.fileStore.basePathPrefix</name>
+    <value>DimensionComputation/Store</value>
+  </property>
+  <property>
+    <name>dt.application.DimensionComputation.operator.Store.embeddableQueryInfoProvider.topic</name>
+    <value>Query-${dt.attr.APPLICATION_NAME}</value>
+  </property>
+  <property>
+    <name>dt.application.DimensionComputation.operator.QueryResult.topic</name>
+    <value>QueryResult-${dt.attr.APPLICATION_NAME}</value>
+  </property>
 </configuration>
 
