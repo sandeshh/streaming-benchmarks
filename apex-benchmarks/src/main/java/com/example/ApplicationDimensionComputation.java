@@ -2,6 +2,7 @@ package com.example;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,26 +10,28 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.hadoop.conf.Configuration;
 
+import com.example.Tuple.TupleAggregator;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import com.datatorrent.api.Context;
 import com.datatorrent.api.Context.OperatorContext;
-import com.datatorrent.api.DAG.Locality;
 import com.datatorrent.api.DAG;
+import com.datatorrent.api.DAG.Locality;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.StreamingApplication;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
+import com.datatorrent.common.partitioner.StatelessPartitioner;
 import com.datatorrent.contrib.dimensions.AppDataSingleSchemaDimensionStoreHDHT;
 import com.datatorrent.contrib.dimensions.DimensionStoreHDHTNonEmptyQueryResultUnifier;
 import com.datatorrent.contrib.hdht.tfile.TFileImpl;
 import com.datatorrent.lib.appdata.schemas.SchemaUtils;
 import com.datatorrent.lib.counters.BasicCounters;
-import com.datatorrent.lib.dimensions.DimensionsComputationFlexibleSingleSchemaPOJO;
 import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
+import com.datatorrent.lib.statistics.DimensionsComputation;
 import com.datatorrent.lib.statistics.DimensionsComputationUnifierImpl;
 
 /**
@@ -48,7 +51,7 @@ public class ApplicationDimensionComputation implements StreamingApplication
   protected String eventSchemaLocation = DIMENSION_SCHEMA;
   protected String PROP_STORE_PATH;
   
-  protected int storePartitionCount = 2;
+  protected int storePartitionCount = 4;
   
   public ApplicationDimensionComputation()
   {
@@ -65,19 +68,20 @@ public class ApplicationDimensionComputation implements StreamingApplication
   {
     TupleGenerateOperator generateOperator = new TupleGenerateOperator();
     dag.addOperator("Generator", generateOperator);
+    dag.setAttribute(generateOperator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(5));
     
     populateDimensionsDAG(dag, configuration, generateOperator.outputPort);
   }
-  
-  public void populateDimensionsDAG(DAG dag, Configuration conf, DefaultOutputPort<?> upstreamPort) 
+
+  public void populateDimensionsDAG(DAG dag, Configuration conf, DefaultOutputPort<Tuple> upstreamPort) 
   {
     final String eventSchema = SchemaUtils.jarResourceFileToString(eventSchemaLocation);
     
     // dimension
-    DimensionsComputationFlexibleSingleSchemaPOJO dimensions = dag.addOperator("DimensionsComputation",
-        DimensionsComputationFlexibleSingleSchemaPOJO.class);
-    dag.getMeta(dimensions).getAttributes().put(Context.OperatorContext.APPLICATION_WINDOW_COUNT, 4);
-    dag.getMeta(dimensions).getAttributes().put(Context.OperatorContext.CHECKPOINT_WINDOW_COUNT, 4);
+    SpecificDimensionComputation dimensions = dag.addOperator("DimensionsComputation",
+        SpecificDimensionComputation.class);
+    dag.getMeta(dimensions).getAttributes().put(Context.OperatorContext.APPLICATION_WINDOW_COUNT, 10);
+    dag.getMeta(dimensions).getAttributes().put(Context.OperatorContext.CHECKPOINT_WINDOW_COUNT, 10);
 
     // Set operator properties
     // key expression
@@ -100,9 +104,11 @@ public class ApplicationDimensionComputation implements StreamingApplication
     // event schema
     dimensions.setConfigurationSchemaJSON(eventSchema);
     dimensions.setUnifier(new DimensionsComputationUnifierImpl<InputEvent, Aggregate>());
-    dag.getMeta(dimensions).getMeta(dimensions.output).getUnifierMeta().getAttributes().put(OperatorContext.MEMORY_MB,
-        8092);
-
+    dag.getMeta(dimensions).getAttributes().put(Context.OperatorContext.APPLICATION_WINDOW_COUNT, 20);
+    dag.getMeta(dimensions).getMeta(dimensions.output).getUnifierMeta().getAttributes().put(OperatorContext.MEMORY_MB,16184);
+    
+    dag.setInputPortAttribute(dimensions.input, Context.PortContext.PARTITION_PARALLEL, true);
+    
     // store
     AppDataSingleSchemaDimensionStoreHDHT store = createStore(dag, conf, eventSchema); 
     
