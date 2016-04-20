@@ -24,7 +24,6 @@ public class FilterTuples extends BaseOperator
         public void process(JSONObject jsonObject)
         {
             try {
-                LOG.info(" Message : {} ", input.toString());
                 if (  jsonObject.getString("event_type").equals("view") ) {
                     output.emit(jsonObject);
                 }
