@@ -1,0 +1,17 @@
+{"keys":
+  [
+    {"name":"adId","type":"string"},
+    {"name":"campaignId","type":"string"},
+    {"name":"eventTime","type":"long"},
+  ],
+ "timeBuckets":["10s"],
+ "values":
+  [
+    {"name":"clicks","type":"long","aggregators":["SUM"]}
+  ],
+ "dimensions":
+  [
+    {"combination":["adId"]},
+    {"combination":["campaignId"]}
+  ]
+}

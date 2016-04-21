@@ -1,0 +1,20 @@
+{"keys":
+  [
+    {"name":"adId","type":"string","expression":"adId"},
+    {"name":"campaignId","type":"string","expression":"campaignId"},
+    {"name":"eventTime","type":"long","expression":"eventTime"},
+    {"name":"time","type":"long","expression":"time"}
+  ],
+ "timeBuckets":["10s","1m"],
+ "values":
+  [
+    {"name":"clicks","type":"long","expression":"clicks","aggregators":["SUM","COUNT"]}
+  ],
+ "dimensions":
+  [
+  	{"combination":[]},
+    {"combination":["adId"]},
+    {"combination":["campaignId"]},
+    {"combination":["adId","campaignId"]}
+  ]
+}
