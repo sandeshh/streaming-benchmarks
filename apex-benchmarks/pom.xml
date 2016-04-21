@@ -239,6 +239,22 @@
     <name>Apache Snapshot Repository</name>
     <url>http://repository.apache.org/snapshots</url>
   </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>Datatorrent-Releases</id>
+      <name>DataTorrent Release Repository</name>
+      <url>https://www.datatorrent.com/maven/content/repositories/releases/</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>DataTorrent-Snapshots</id>
+      <name>DataTorrent Early Access Program Snapshot Repository</name>
+      <url>https://www.datatorrent.com/maven/content/repositories/snapshots/</url>
+    </repository>
   </repositories>
 
   <dependencies>
