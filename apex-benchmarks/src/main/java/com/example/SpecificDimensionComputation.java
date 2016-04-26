@@ -26,11 +26,15 @@ public class SpecificDimensionComputation extends AbstractDimensionsComputationF
   public void convert(InputEvent inputEvent, Tuple tuple)
   {
     GPOMutable keys = inputEvent.getKeys();
-    String[] stringFields = keys.getFieldsString();
-    stringFields[0] = tuple.ad_id;
-    stringFields[1] = tuple.campaign_id;
+//    String[] stringFields = keys.getFieldsString();
+//    stringFields[0] = tuple.ad_id;
+//    stringFields[1] = tuple.campaign_id;
     
-    keys.getFieldsLong()[0] = tuple.event_ime;
+    long[] longFields = keys.getFieldsLong();
+    longFields[0] = tuple.event_ime;
+    longFields[1] = tuple.adId;
+    longFields[2] = tuple.campaignId;
+
     inputEvent.getAggregates().getFieldsLong()[0] = tuple.clicks;
   }
   

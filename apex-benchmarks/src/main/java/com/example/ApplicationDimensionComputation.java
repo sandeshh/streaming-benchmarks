@@ -2,7 +2,6 @@ package com.example;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.hadoop.conf.Configuration;
 
-import com.example.Tuple.TupleAggregator;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
@@ -31,7 +29,6 @@ import com.datatorrent.lib.dimensions.DimensionsEvent.Aggregate;
 import com.datatorrent.lib.dimensions.DimensionsEvent.InputEvent;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
-import com.datatorrent.lib.statistics.DimensionsComputation;
 import com.datatorrent.lib.statistics.DimensionsComputationUnifierImpl;
 
 /**
@@ -44,6 +41,8 @@ public class ApplicationDimensionComputation implements StreamingApplication
 {
   public static final String APP_NAME = "DimensionComputation";
   public static final String DIMENSION_SCHEMA = "eventSchema.json";
+  public static final int GENERATOR_PARTITION_NUM = 5;
+  
   private static final transient Logger logger = LoggerFactory.getLogger(ApplicationDimensionComputation.class);
   
   protected String appName;
@@ -68,7 +67,7 @@ public class ApplicationDimensionComputation implements StreamingApplication
   {
     TupleGenerateOperator generateOperator = new TupleGenerateOperator();
     dag.addOperator("Generator", generateOperator);
-    dag.setAttribute(generateOperator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(5));
+    dag.setAttribute(generateOperator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(GENERATOR_PARTITION_NUM));
     
     populateDimensionsDAG(dag, configuration, generateOperator.outputPort);
   }

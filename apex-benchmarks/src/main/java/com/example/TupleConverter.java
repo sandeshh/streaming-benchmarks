@@ -30,7 +30,8 @@ public class TupleConverter implements Operator
   private AggregatorRegistry aggregatorRegistry = AggregatorRegistry.DEFAULT_AGGREGATOR_REGISTRY;
   private transient Object2IntOpenHashMap<DimensionsDescriptor> dimensionsDescriptorToID = new Object2IntOpenHashMap<DimensionsDescriptor>();
   private transient FieldsDescriptor aggregateFieldsDescriptor;
-  private String[] dimensionSpecs;
+  //private String[] dimensionSpecs;
+  private DimensionsDescriptor[] dimensionsDescriptors;
   private int schemaID = AbstractDimensionsComputationFlexibleSingleSchema.DEFAULT_SCHEMA_ID;
   private transient int sumAggregatorIndex;
 
@@ -48,10 +49,10 @@ public class TupleConverter implements Operator
 
       for(String field: keyDescriptor.getFieldList()) {
         if(field.equals(Tuple.ADID)) {
-          key.setField(Tuple.ADID, tuple.ad_id);
+          key.setField(Tuple.ADID, tuple.adId);
         }
         else if(field.equals(Tuple.CAMPAIGNID)) {
-          key.setField(Tuple.CAMPAIGNID, tuple.campaign_id);
+          key.setField(Tuple.CAMPAIGNID, tuple.campaignId);
         }
         else if(field.equals(Tuple.EVENTTIME)) {
           key.setField(Tuple.EVENTTIME, tuple.event_ime);
@@ -101,14 +102,23 @@ public class TupleConverter implements Operator
     aggregateFieldsDescriptor = dimensionsConfigurationSchema.getDimensionsDescriptorIDToAggregatorIDToOutputAggregatorDescriptor().
                                 get(0).get(sumAggregatorIndex);
 
+    LOG.info("dimensionsDescriptorToID keys: {}\n\ndimensionsDescriptorToID: {}", dimensionsDescriptorToID.keySet(), dimensionsDescriptorToID);
+    
     for(int index = 0;
-        index < dimensionSpecs.length;
+        index < dimensionsDescriptors.length;
         index++) {
-      DimensionsDescriptor dimensionsDescriptor = new DimensionsDescriptor(dimensionSpecs[index]);
-      LOG.debug("{}", dimensionsDescriptor);
-      int newID = dimensionsDescriptorToID.get(dimensionsDescriptor);
+      DimensionsDescriptor dimensionsDescriptor = dimensionsDescriptors[index];
+      LOG.info("dimensionsDescriptor: {}", dimensionsDescriptor);
+      
+      Integer oNewID = dimensionsDescriptorToID.get(dimensionsDescriptor);
+      if(oNewID == null)
+      {
+        LOG.warn("no entry for dimensionsDescriptor {}", dimensionsDescriptor);
+        continue;
+      }
+      int newID = oNewID;
       int oldID = index;
-      LOG.debug("{} {}", newID, oldID);
+      LOG.info("{} {}", newID, oldID);
       prevDdIDToThisDdID.put(newID, oldID);
     }
   }
@@ -147,18 +157,18 @@ public class TupleConverter implements Operator
   /**
    * @return the dimensionSpecs
    */
-  public String[] getDimensionSpecs()
-  {
-    return dimensionSpecs;
-  }
-
-  /**
-   * @param dimensionSpecs the dimensionSpecs to set
-   */
-  public void setDimensionSpecs(String[] dimensionSpecs)
-  {
-    this.dimensionSpecs = dimensionSpecs;
-  }
+//  public String[] getDimensionSpecs()
+//  {
+//    return dimensionSpecs;
+//  }
+//
+//  /**
+//   * @param dimensionSpecs the dimensionSpecs to set
+//   */
+//  public void setDimensionSpecs(String[] dimensionSpecs)
+//  {
+//    this.dimensionSpecs = dimensionSpecs;
+//  }
 
   /**
    * @return the schemaID
@@ -190,6 +200,16 @@ public class TupleConverter implements Operator
   public void setEventSchemaJSON(String eventSchemaJSON)
   {
     this.eventSchemaJSON = eventSchemaJSON;
+  }
+
+  public DimensionsDescriptor[] getDimensionsDescriptors()
+  {
+    return dimensionsDescriptors;
+  }
+
+  public void setDimensionsDescriptors(DimensionsDescriptor[] dimensionsDescriptors)
+  {
+    this.dimensionsDescriptors = dimensionsDescriptors;
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(TupleConverter.class);
