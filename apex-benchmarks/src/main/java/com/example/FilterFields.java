@@ -20,14 +20,11 @@ public class FilterFields extends BaseOperator
 
                 Tuple tuple = new Tuple();
 
-                tuple.ad_id = jsonObject.getString("ad_id");
-                tuple.event_ime = Long.parseLong(jsonObject.getString("event_time"));
-
-                if ( tuple.event_ime == null ) return ;
+                tuple.adId = jsonObject.getLong("ad_id");
+                tuple.event_time = Long.parseLong(jsonObject.getString("event_time"));
 
                 output.emit(tuple);
             } catch (JSONException e) {
-                DTThrowable.wrapIfChecked(e);
             }
         }
     };

@@ -29,10 +29,10 @@ public class CampaignProcessor extends BaseOperator
         public void process(Tuple tuple)
         {
             try {
-                campaignProcessorCommon.execute(tuple.campaign_id, tuple.event_ime.toString());
+                campaignProcessorCommon.execute(String.valueOf(tuple.campaignId), String.valueOf(tuple.event_time));
             }
             catch ( Exception exception ) {
-                throw new RuntimeException( tuple.campaign_id + Long.toString(tuple.event_ime) );
+                throw new RuntimeException( "" + tuple.campaignId + ", " + Long.toString(tuple.event_time) );
             }
         }
     };

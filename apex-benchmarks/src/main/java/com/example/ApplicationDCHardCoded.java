@@ -1,5 +1,6 @@
 package com.example;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
@@ -7,13 +8,16 @@ import org.apache.hadoop.conf.Configuration;
 import com.example.Tuple.TupleAggregator;
 
 import com.datatorrent.api.Context;
-import com.datatorrent.api.DAG;
-import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.Context.OperatorContext;
+import com.datatorrent.api.DAG;
 import com.datatorrent.api.DAG.Locality;
+import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.contrib.dimensions.AppDataSingleSchemaDimensionStoreHDHT;
+import com.datatorrent.lib.appdata.schemas.CustomTimeBucket;
+import com.datatorrent.lib.appdata.schemas.Fields;
 import com.datatorrent.lib.appdata.schemas.SchemaUtils;
+import com.datatorrent.lib.dimensions.DimensionsDescriptor;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataQuery;
 import com.datatorrent.lib.io.PubSubWebSocketAppDataResult;
 import com.datatorrent.lib.statistics.DimensionsComputation;
@@ -24,7 +28,6 @@ public class ApplicationDCHardCoded extends ApplicationDimensionComputation
 {
   public static final String APP_NAME = "DCHardCoded";
 
-  
   /**
    * this is used for hard coded tuple
    * @param dag
@@ -48,10 +51,13 @@ public class ApplicationDCHardCoded extends ApplicationDimensionComputation
     //input.setEventSchemaJSON(eventSchema);
 
     String[] dimensionSpecs = new String[] {
-      "time=" + TimeUnit.MINUTES,
       "time=" + TimeUnit.MINUTES + ":adId",
-      "time=" + TimeUnit.MINUTES + ":campaignId",
-      "time=" + TimeUnit.MINUTES + ":adId:campaignId"
+      "time=" + TimeUnit.MINUTES + ":campaignId"
+    };
+    
+    DimensionsDescriptor[] dimensionsDescriptors = new DimensionsDescriptor[]{
+        new DimensionsDescriptor(new CustomTimeBucket("10s"), new Fields(Arrays.asList(new String[]{"adId"}))),
+        new DimensionsDescriptor(new CustomTimeBucket("10s"), new Fields(Arrays.asList(new String[]{"campaignId"})))
     };
 
     //Set operator properties
@@ -77,7 +83,7 @@ public class ApplicationDCHardCoded extends ApplicationDimensionComputation
     
     //Configuring the converter
     tupleConverter.setEventSchemaJSON(eventSchema);
-    tupleConverter.setDimensionSpecs(dimensionSpecs);
+    tupleConverter.setDimensionsDescriptors(dimensionsDescriptors);
 
     
     // store

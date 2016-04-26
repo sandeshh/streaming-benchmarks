@@ -1,7 +1,7 @@
 {"keys":
   [
-    {"name":"adId","type":"string"},
-    {"name":"campaignId","type":"string"},
+    {"name":"adId","type":"long"},
+    {"name":"campaignId","type":"long"},
     {"name":"eventTime","type":"long"},
   ],
  "timeBuckets":["10s"],
