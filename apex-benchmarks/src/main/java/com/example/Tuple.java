@@ -18,52 +18,82 @@ public class Tuple implements Serializable
   public static final String CAMPAIGNID = "campaignId";
   public static final String EVENTTIME = "eventTime";
   public static final String CLICKS = "clicks";
+  
+  public long adId;
+  public long campaignId;
 
-  public String ad_id;
-  public String campaign_id;
-  public Long event_ime;
+  public long event_time;
   public long clicks = 0;
 
   public Tuple()
   {
   }
 
-  public Tuple(String adId, String campaignId, long eventTime, long clicks)
+//  public Tuple(String adId, String campaignId, long eventTime, long clicks)
+//  {
+//    this.ad_id = adId;
+//    this.campaign_id = campaignId;
+//    this.event_ime = eventTime;
+//    this.clicks = clicks;
+//  }
+  public Tuple(long adId, long campaignId, long eventTime, long clicks)
   {
-    this.ad_id = adId;
-    this.campaign_id = campaignId;
-    this.event_ime = eventTime;
+    this.adId = adId;
+    this.campaignId = campaignId;
+    this.event_time = eventTime;
     this.clicks = clicks;
   }
+//  
+//  public String getAdId()
+//  {
+//    return ad_id;
+//  }
+//
+//  public void setAdId(String adId)
+//  {
+//    this.ad_id = adId;
+//  }
+//
+//  public String getCampaignId()
+//  {
+//    return campaign_id;
+//  }
+//
+//  public void setCampaignId(String campaignId)
+//  {
+//    this.campaign_id = campaignId;
+//  }
 
-  public String getAdId()
+
+  public long getAdId()
   {
-    return ad_id;
+    return adId;
   }
 
-  public void setAdId(String adId)
+  public void setAdId(long adId)
   {
-    this.ad_id = adId;
+    this.adId = adId;
   }
 
-  public String getCampaignId()
+  public long getCampaignId()
   {
-    return campaign_id;
+    return campaignId;
   }
 
-  public void setCampaignId(String campaignId)
+  public void setCampaignId(long campaignId)
   {
-    this.campaign_id = campaignId;
+    this.campaignId = campaignId;
   }
 
+  
   public long getEventTime()
   {
-    return (event_ime == null) ? 0 : event_ime;
+    return event_time;
   }
 
   public void setEventTime(long eventTime)
   {
-    this.event_ime = eventTime;
+    this.event_time = eventTime;
   }
 
   public long getTime()
@@ -85,9 +115,11 @@ public class Tuple implements Serializable
   public int hashCode()
   {
     int hash = 5;
-    hash = 71 * hash + this.ad_id.hashCode();
-    hash = 71 * hash + this.campaign_id.hashCode();
-    hash = 71 * hash + (int)(long)this.event_ime;
+//    hash = 71 * hash + this.ad_id.hashCode();
+//    hash = 71 * hash + this.campaign_id.hashCode();
+    hash = 71 * hash + (int)adId;
+    hash = 71 * hash + (int)campaignId;
+    hash = 71 * hash + (int)(long)this.event_time;
     hash = 71 * hash + (int)this.clicks;
 
     return hash;
@@ -102,8 +134,11 @@ public class Tuple implements Serializable
 
     Tuple tuple = (Tuple)o;
 
-    return this.ad_id.equals(tuple.ad_id) && this.campaign_id.equals(tuple.campaign_id) && this.event_ime == tuple.event_ime
+//    return this.ad_id.equals(tuple.ad_id) && this.campaign_id.equals(tuple.campaign_id) && this.event_ime == tuple.event_ime
+//        && this.clicks == tuple.clicks;
+    return this.adId == tuple.adId && this.campaignId == tuple.campaignId && this.event_time == tuple.event_time
         && this.clicks == tuple.clicks;
+
   }
   
   public static class TupleAggregateEvent extends Tuple implements DimensionsComputation.AggregateEvent
@@ -155,9 +190,11 @@ public class Tuple implements Serializable
     public int hashCode()
     {
       int hash = 5;
-      hash = 71 * hash + this.ad_id.hashCode();
-      hash = 71 * hash + this.campaign_id.hashCode();
-      hash = 71 * hash + (int)(long)this.event_ime;
+//      hash = 71 * hash + this.ad_id.hashCode();
+//      hash = 71 * hash + this.campaign_id.hashCode();
+      hash = 71 * hash + (int)this.adId;
+      hash = 71 * hash + (int)this.campaignId;
+      hash = 71 * hash + (int)(long)this.event_time;
       hash = 71 * hash + (int)this.clicks;
       hash = 71 * hash + this.timeBucket;
 
@@ -173,8 +210,10 @@ public class Tuple implements Serializable
 
       TupleAggregateEvent aae = (TupleAggregateEvent)o;
 
-      return this.ad_id.equals(aae.ad_id) && this.campaign_id.equals(aae.campaign_id) && this.event_ime == aae.event_ime
-          && this.clicks == aae.clicks && this.timeBucket == aae.timeBucket;
+//      return this.ad_id.equals(aae.ad_id) && this.campaign_id.equals(aae.campaign_id) && this.event_ime == aae.event_ime
+//          && this.clicks == aae.clicks && this.timeBucket == aae.timeBucket;
+      return this.adId == aae.adId && this.campaignId == aae.campaignId && this.event_time == aae.event_time
+        && this.clicks == aae.clicks && this.timeBucket == aae.timeBucket;
     }
   }
 
@@ -269,12 +308,14 @@ public class Tuple implements Serializable
     public TupleAggregateEvent getGroup(Tuple src, int aggregatorIndex)
     {
       TupleAggregateEvent event = new TupleAggregateEvent(aggregatorIndex);
-      event.event_ime = timeBucket.roundDown(src.event_ime);
+      event.event_time = timeBucket.roundDown(src.event_time);
       event.timeBucket = timeBucketInt;
 
-      event.ad_id = src.ad_id;
-      event.campaign_id = src.campaign_id;
-
+//      event.ad_id = src.ad_id;
+//      event.campaign_id = src.campaign_id;
+      event.adId = src.adId;
+      event.campaignId = src.campaignId;
+      
       event.aggregatorIndex = aggregatorIndex;
       event.dimensionsDescriptorID = dimensionsDescriptorID;
 
@@ -297,10 +338,12 @@ public class Tuple implements Serializable
     public int computeHashCode(Tuple event)
     {
       int hash = 5;
-      hash = 71 * hash + event.ad_id.hashCode();
-      hash = 71 * hash + event.campaign_id.hashCode();
+//      hash = 71 * hash + event.ad_id.hashCode();
+//      hash = 71 * hash + event.campaign_id.hashCode();
+      hash = 71 * hash + (int)event.adId;
+      hash = 71 * hash + (int)event.campaignId;
       
-      long ltime = time.convert(event.event_ime, TimeUnit.MILLISECONDS);
+      long ltime = time.convert(event.event_time, TimeUnit.MILLISECONDS);
       hash = 71 * hash + (int) (ltime ^ (ltime >>> 32));
           
       return hash;
@@ -321,15 +364,18 @@ public class Tuple implements Serializable
         return false;
       }
 
-      if (!event1.ad_id.equals(event2.ad_id)) {
+//      if (!event1.ad_id.equals(event2.ad_id)) {
+//        return false;
+//      }
+//      
+//      if (!event1.campaign_id.equals(event2.campaign_id)) {
+//        return false;
+//      }
+      if (event1.adId != event2.adId)
         return false;
-      }
-      
-      if (!event1.campaign_id.equals(event2.campaign_id)) {
+      if (event1.campaignId != event2.campaignId)
         return false;
-      }
-      
-      if (time != null && time.convert(event1.event_ime, TimeUnit.MILLISECONDS) != time.convert(event2.event_ime, TimeUnit.MILLISECONDS)) {
+      if (time != null && time.convert(event1.event_time, TimeUnit.MILLISECONDS) != time.convert(event2.event_time, TimeUnit.MILLISECONDS)) {
         return false;
       }
       return true;

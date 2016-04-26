@@ -1,20 +1,22 @@
 package com.example;
 
-import benchmark.common.advertising.CampaignProcessorCommon;
-import benchmark.common.advertising.CampaignWindowPair;
-import benchmark.common.advertising.LRUHashMap;
-import benchmark.common.advertising.Window;
-import com.datatorrent.api.Context;
-import com.datatorrent.api.DefaultInputPort;
-import com.datatorrent.common.util.BaseOperator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.datatorrent.api.Context;
+import com.datatorrent.api.DefaultInputPort;
+import com.datatorrent.common.util.BaseOperator;
+
+import benchmark.common.advertising.CampaignProcessorCommon;
+import benchmark.common.advertising.CampaignWindowPair;
+import benchmark.common.advertising.LRUHashMap;
+import benchmark.common.advertising.Window;
+import redis.clients.jedis.Jedis;
 
 /**
  * Created by sandesh on 4/6/16.
@@ -66,17 +68,17 @@ public class CampaignProcessorWithApexWindow extends BaseOperator {
         {
             try {
 
-                Long timeBucket = tuple.event_ime / time_divisor;
-                Window window = getWindow(timeBucket, tuple.campaign_id);
+                Long timeBucket = tuple.event_time / time_divisor;
+                Window window = getWindow(timeBucket, String.valueOf(tuple.campaignId));
                 window.seenCount++;
 
-                CampaignWindowPair newPair = new CampaignWindowPair(tuple.campaign_id, window);
+                CampaignWindowPair newPair = new CampaignWindowPair(String.valueOf(tuple.campaignId), window);
                 need_flush.add(newPair);
 
                 processed++;
             }
             catch ( Exception exception ) {
-                throw new RuntimeException( tuple.campaign_id + tuple.event_ime );
+                throw new RuntimeException( " " + tuple.campaignId + ", " + tuple.event_time );
             }
         }
     };

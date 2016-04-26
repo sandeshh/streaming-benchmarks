@@ -29,13 +29,13 @@ public class RedisJoin extends BaseOperator
         @Override
         public void process(Tuple tuple)
         {
-            String campaign_id = redisAdCampaignCache.execute(tuple.ad_id);
+            String campaign_id = redisAdCampaignCache.execute(String.valueOf(tuple.adId));
 
             if (campaign_id == null || campaign_id.isEmpty()) {
                 return;
             }
 
-            tuple.campaign_id = campaign_id ;
+            tuple.campaignId = Long.parseLong(campaign_id) ;
 
             output.emit(tuple);
         }

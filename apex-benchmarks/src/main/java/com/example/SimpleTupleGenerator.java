@@ -1,6 +1,5 @@
 package com.example;
 
-import java.util.Calendar;
 import java.util.Random;
 
 public class SimpleTupleGenerator
@@ -11,11 +10,16 @@ public class SimpleTupleGenerator
   public static final int maxClicks = 1000;
   
   protected static final Random random = new Random();
+  protected static final int maxAdId = 100;
+  protected static final int maxCompainId = 10;
+  
   public Tuple next()
   {
-    return new Tuple(randomValue(adIds), randomValue(campaignIds), Calendar.getInstance().getTimeInMillis() + randomValue(eventTimeShifts), random.nextInt(maxClicks));
+    return new Tuple(random.nextInt(maxAdId), random.nextInt(maxCompainId), System.currentTimeMillis() + randomValue(eventTimeShifts), random.nextInt(maxClicks));
+    //return new Tuple(randomValue(adIds), randomValue(campaignIds), System.currentTimeMillis() + randomValue(eventTimeShifts), random.nextInt(maxClicks));
   }
   
+
   public <T> T randomValue(T[] array)
   {
     return array[random.nextInt(array.length)];
