@@ -31,7 +31,7 @@ public class SpecificDimensionComputation extends AbstractDimensionsComputationF
 //    stringFields[1] = tuple.campaign_id;
     
     long[] longFields = keys.getFieldsLong();
-    longFields[0] = tuple.event_ime;
+    longFields[0] = tuple.event_time;
     longFields[1] = tuple.adId;
     longFields[2] = tuple.campaignId;
 

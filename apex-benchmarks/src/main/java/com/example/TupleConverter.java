@@ -55,11 +55,11 @@ public class TupleConverter implements Operator
           key.setField(Tuple.CAMPAIGNID, tuple.campaignId);
         }
         else if(field.equals(Tuple.EVENTTIME)) {
-          key.setField(Tuple.EVENTTIME, tuple.event_ime);
+          key.setField(Tuple.EVENTTIME, tuple.event_time);
         }
       }
 
-      key.setField(DimensionsDescriptor.DIMENSION_TIME, tuple.event_ime);
+      key.setField(DimensionsDescriptor.DIMENSION_TIME, tuple.event_time);
       key.setField(DimensionsDescriptor.DIMENSION_TIME_BUCKET, tuple.timeBucket);
 
       EventKey eventKey = new EventKey(schemaID,
