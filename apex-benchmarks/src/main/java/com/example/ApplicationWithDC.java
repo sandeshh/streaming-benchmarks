@@ -8,6 +8,9 @@ import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.annotation.ApplicationAnnotation;
 import com.datatorrent.common.partitioner.StatelessPartitioner;
 
+import java.util.List;
+import java.util.Map;
+
 @ApplicationAnnotation(name = ApplicationWithDC.APP_NAME)
 public class ApplicationWithDC extends ApplicationDimensionComputation
 {
@@ -35,9 +38,9 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples());
     FilterFields filterFields = dag.addOperator("filterFields", new FilterFields());
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
+    setupRedis(eventGenerator.getCampaigns());
     //CampaignProcessorWithApexWindow campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessorWithApexWindow());
 
-    // kafkaInput.setIdempotentStorageManager(new IdempotentStorageManager.FSIdempotentStorageManager());
 
     // Connect the Ports in the Operators
     dag.addStream("deserialize", eventGenerator.out, deserializeJSON.input);
@@ -54,5 +57,13 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(1));
 
     return redisJoin.output;
+  }
+
+  private void setupRedis(Map<String, List<String>> campaigns) {
+
+    RedisHelper redisHelper = new RedisHelper();
+    redisHelper.init("node35.morado.com");
+
+    redisHelper.prepareRedis(campaigns);
   }
 }
