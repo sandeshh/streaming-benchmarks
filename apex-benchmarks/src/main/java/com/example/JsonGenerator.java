@@ -1,25 +1,19 @@
 package com.example;
 
-import com.datatorrent.api.Context;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 import com.datatorrent.common.util.BaseOperator;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
-import java.io.*;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by sandesh on 2/24/16.
  */
-public class EventGenerator extends BaseOperator implements InputOperator {
+public class JsonGenerator extends BaseOperator implements InputOperator {
 
-    public final transient DefaultOutputPort<String> out = new DefaultOutputPort<String>();
+    public final transient DefaultOutputPort<JSONObject> out = new DefaultOutputPort<JSONObject>();
 
     private int adsIdx = 0;
     private int eventsIdx = 0;
@@ -31,7 +25,7 @@ public class EventGenerator extends BaseOperator implements InputOperator {
     private List<String> ads;
     private final Map<String, List<String>> campaigns;
 
-    public EventGenerator() {
+    public JsonGenerator() {
         this.campaigns = generateCampaigns();
         this.ads = flattenCampaigns();
     }
@@ -43,29 +37,32 @@ public class EventGenerator extends BaseOperator implements InputOperator {
     /**
      * Generate a single element
      */
-    public String generateElement() {
+    public JSONObject generateElement()
+    {
+        JSONObject jsonObject = new JSONObject();
+        try       {
+
+        jsonObject.put("user_id", userID);
+        jsonObject.put("page_id", pageID);
+
         if (adsIdx == ads.size()) {
             adsIdx = 0;
         }
         if (eventsIdx == eventTypes.length) {
             eventsIdx = 0;
         }
-        sb.setLength(0);
-        sb.append("{\"user_id\":\"");
-        sb.append(pageID);
-        sb.append("\",\"page_id\":\"");
-        sb.append(userID);
-        sb.append("\",\"ad_id\":\"");
-        sb.append(ads.get(adsIdx++));
-        sb.append("\",\"ad_type\":\"");
-        sb.append("banner78"); // value is immediately discarded. The original generator would put a string with 38/5 = 7.6 chars. We put 8.
-        sb.append("\",\"event_type\":\"");
-        sb.append(eventTypes[eventsIdx++]);
-        sb.append("\",\"event_time\":\"");
-        sb.append(System.currentTimeMillis());
-        sb.append("\",\"ip_address\":\"1.2.3.4\"}");
 
-        return sb.toString();
+        jsonObject.put("ad_id", ads.get(adsIdx++));
+        jsonObject.put("ad_type", "banner78");
+        jsonObject.put("event_type", eventTypes[eventsIdx++]);
+        jsonObject.put("event_time", System.currentTimeMillis());
+        jsonObject.put("ip_address", "1.2.3.4");
+    }
+    catch ( JSONException json){
+
+    }
+
+        return jsonObject;
     }
 
     /**

@@ -42,8 +42,8 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     // Connect the Ports in the Operators
     dag.addStream("deserialize", eventGenerator.out, deserializeJSON.input);
     dag.addStream("filterTuples", deserializeJSON.output, filterTuples.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
-    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
-    dag.addStream("redisJoin", filterFields.output, redisJoin.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
+    dag.addStream("filterFields", filterTuples.output, filterFields.input).setLocality(DAG.Locality.THREAD_LOCAL);
+    dag.addStream("redisJoin", filterFields.output, redisJoin.input).setLocality(DAG.Locality.THREAD_LOCAL);
     //dag.addStream("output", redisJoin.output, campaignProcessor.input);
 
     dag.setInputPortAttribute(deserializeJSON.input, Context.PortContext.PARTITION_PARALLEL, true);
@@ -51,7 +51,7 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
     dag.setInputPortAttribute(redisJoin.input, Context.PortContext.PARTITION_PARALLEL, true);
 
-    dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(5));
+    dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(1));
 
     return redisJoin.output;
   }

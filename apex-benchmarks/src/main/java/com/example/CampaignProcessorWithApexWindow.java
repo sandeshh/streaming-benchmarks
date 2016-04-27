@@ -21,7 +21,6 @@ import redis.clients.jedis.Jedis;
 /**
  * Created by sandesh on 4/6/16.
  *
- * TODO : Extension : Use the streamcodec to send the tuples to particular partition, so that there will be only one writer for one time window.
  */
 public class CampaignProcessorWithApexWindow extends BaseOperator {
 
