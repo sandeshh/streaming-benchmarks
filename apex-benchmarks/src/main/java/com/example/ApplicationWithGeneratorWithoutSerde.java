@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by sandesh on 3/18/16.
  */
-@ApplicationAnnotation(name = "ApplicationWithGenerator")
+@ApplicationAnnotation(name = "ApplicationWithGeneratorWithoutSerde")
 public class ApplicationWithGeneratorWithoutSerde implements StreamingApplication {
     @Override
     public void populateDAG(DAG dag, Configuration configuration) {
