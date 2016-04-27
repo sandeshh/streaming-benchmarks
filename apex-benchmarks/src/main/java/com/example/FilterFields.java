@@ -25,6 +25,7 @@ public class FilterFields extends BaseOperator
 
                 output.emit(tuple);
             } catch (JSONException e) {
+                throw new RuntimeException(e) ;
             }
         }
     };
