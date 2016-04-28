@@ -48,7 +48,7 @@ public class EventGenerator2 extends BaseOperator implements InputOperator {
         sb.append("\",\"page_id\":\"");
         sb.append(userID);
         sb.append("\",\"ad_id\":\"");
-        sb.append(10);
+        sb.append(ads.get(adsIdx++));
         sb.append("\",\"ad_type\":\"");
         sb.append("banner78"); // value is immediately discarded. The original generator would put a string with 38/5 = 7.6 chars. We put 8.
         sb.append("\",\"event_type\":\"");

@@ -75,6 +75,10 @@
     <name>dt.operator.redisJoin.redisServerHost</name>
     <value>node35.morado.com</value>
   </property>
+  <property>
+    <name>dt.operator.campaignProcessor.redisServerHost</name>
+    <value>node35.morado.com</value>
+  </property>
 
   <property>
     <name>dt.attr.QUEUE_CAPACITY</name>
