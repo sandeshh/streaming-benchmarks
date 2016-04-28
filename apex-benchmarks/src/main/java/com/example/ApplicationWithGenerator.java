@@ -26,16 +26,15 @@ public class ApplicationWithGenerator implements StreamingApplication {
         // settings are applied by the platform using the config file.
 
         EventGenerator2 eventGenerator = dag.addOperator("eventGenerator", new EventGenerator2());
-        NullOperator nulllOperator = dag.addOperator("nullOperator", new NullOperator());
+        //NullOperator nulllOperator = dag.addOperator("nullOperator", new NullOperator());
 
         DeserializeJSON deserializeJSON = dag.addOperator("deserialize", new DeserializeJSON());
         FilterTuples filterTuples = dag.addOperator("filterTuples", new FilterTuples() );
         FilterFields2 filterFields = dag.addOperator("filterFields", new FilterFields2() );
         RedisJoin2 redisJoin = dag.addOperator("redisJoin", new RedisJoin2());
 
-        /*
         CampaignProcessor2 campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor2());
-*/
+
         setupRedis(eventGenerator.getCampaigns());
 
         // Connect the Ports in the Operators
@@ -45,7 +44,7 @@ public class ApplicationWithGenerator implements StreamingApplication {
         dag.addStream("redisJoin", filterFields.output, redisJoin.input).setLocality(DAG.Locality.CONTAINER_LOCAL);
 
         // dag.addStream("output", redisJoin.output, campaignProcessor.input);
-        dag.addStream("output", redisJoin.output, nulllOperator.input);
+        dag.addStream("output", redisJoin.output, campaignProcessor.input);
 
         dag.setInputPortAttribute(deserializeJSON.input, Context.PortContext.PARTITION_PARALLEL, true);
         dag.setInputPortAttribute(filterTuples.input, Context.PortContext.PARTITION_PARALLEL, true);

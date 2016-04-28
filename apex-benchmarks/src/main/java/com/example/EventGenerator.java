@@ -51,6 +51,7 @@ public class EventGenerator extends BaseOperator implements InputOperator {
         if (eventsIdx == eventTypes.length) {
             eventsIdx = 0;
         }
+        sb.setLength(0);
         sb.append("{\"user_id\":\"");
         sb.append(pageID);
         sb.append("\",\"page_id\":\"");
@@ -103,6 +104,7 @@ public class EventGenerator extends BaseOperator implements InputOperator {
 
     @Override
     public void emitTuples() {
-        out.emit( generateElement() ) ;
+        for(int index=0; index < 100; ++index)
+            out.emit( generateElement() ) ;
     }
 }
