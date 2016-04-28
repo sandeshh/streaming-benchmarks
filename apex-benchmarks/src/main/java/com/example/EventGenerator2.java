@@ -94,6 +94,9 @@ public class EventGenerator2 extends BaseOperator implements InputOperator {
 
     @Override
     public void emitTuples() {
-        out.emit( generateElement() ) ;
+        for ( int i = 0 ; i < 100 ; ++i ) {
+            out.emit(generateElement());
+        }
     }
+
 }
