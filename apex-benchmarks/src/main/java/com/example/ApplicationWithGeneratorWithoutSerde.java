@@ -52,6 +52,6 @@ public class ApplicationWithGeneratorWithoutSerde implements StreamingApplicatio
         RedisHelper redisHelper = new RedisHelper();
         redisHelper.init("node35.morado.com");
 
-        redisHelper.prepareRedis(campaigns);
+        redisHelper.prepareRedis2(campaigns);
     }
 }

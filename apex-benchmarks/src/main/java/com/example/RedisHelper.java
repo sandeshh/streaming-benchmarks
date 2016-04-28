@@ -57,7 +57,7 @@ public class RedisHelper {
         }
     }
 
-    public void prepareRedis(Map<String, List<String>> campaigns) {
+    public void prepareRedis2(Map<String, List<String>> campaigns) {
 
         jedis.select(0);
         jedis.flushAll();
@@ -67,6 +67,21 @@ public class RedisHelper {
             jedis.sadd("campaigns", campaign);
             for (String ad : entry.getValue()) {
                 jedis.set(ad, campaign);
+            }
+        }
+        jedis.close();
+    }
+
+    public void prepareRedis(Map<Integer, List<Integer>> campaigns) {
+
+        jedis.select(0);
+        jedis.flushAll();
+
+        for (Map.Entry<Integer, List<Integer>> entry : campaigns.entrySet()) {
+            String campaign = entry.getKey().toString();
+            jedis.sadd("campaigns", campaign);
+            for (Integer ad : entry.getValue()) {
+                jedis.set(ad.toString(), campaign);
             }
         }
         jedis.close();

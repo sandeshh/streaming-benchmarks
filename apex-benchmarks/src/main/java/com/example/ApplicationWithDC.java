@@ -39,7 +39,7 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     FilterFields filterFields = dag.addOperator("filterFields", new FilterFields());
     RedisJoin redisJoin = dag.addOperator("redisJoin", new RedisJoin());
     setupRedis(eventGenerator.getCampaigns());
-    //CampaignProcessorWithApexWindow campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessorWithApexWindow());
+  //  CampaignProcessor campaignProcessor = dag.addOperator("campaignProcessor", new CampaignProcessor());
 
 
     // Connect the Ports in the Operators
@@ -59,7 +59,7 @@ public class ApplicationWithDC extends ApplicationDimensionComputation
     return redisJoin.output;
   }
 
-  private void setupRedis(Map<String, List<String>> campaigns) {
+  private void setupRedis(Map<Integer, List<Integer>> campaigns) {
 
     RedisHelper redisHelper = new RedisHelper();
     redisHelper.init("node35.morado.com");

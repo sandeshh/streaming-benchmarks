@@ -25,7 +25,7 @@ public class ApplicationWithGenerator implements StreamingApplication {
         // Create operators for each step
         // settings are applied by the platform using the config file.
 
-        EventGenerator eventGenerator = dag.addOperator("eventGenerator", new EventGenerator());
+        EventGenerator2 eventGenerator = dag.addOperator("eventGenerator", new EventGenerator2());
        // NullOperator nulllOperator = dag.addOperator("nullOperator", new NullOperator());
 
 
@@ -60,6 +60,6 @@ public class ApplicationWithGenerator implements StreamingApplication {
         RedisHelper redisHelper = new RedisHelper();
         redisHelper.init("node35.morado.com");
 
-        redisHelper.prepareRedis(campaigns);
+        redisHelper.prepareRedis2(campaigns);
     }
 }
