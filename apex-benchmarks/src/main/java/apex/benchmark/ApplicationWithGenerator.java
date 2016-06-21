@@ -42,7 +42,8 @@ public class ApplicationWithGenerator implements StreamingApplication
     dag.setInputPortAttribute(filterTuples.input, Context.PortContext.PARTITION_PARALLEL, true);
     dag.setInputPortAttribute(filterFields.input, Context.PortContext.PARTITION_PARALLEL, true);
     dag.setInputPortAttribute(redisJoin.input, Context.PortContext.PARTITION_PARALLEL, true);
-    dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(1));
+
+    dag.setAttribute(eventGenerator, Context.OperatorContext.PARTITIONER, new StatelessPartitioner<EventGenerator>(8));
   }
 
   private void setupRedis(Map<String, List<String>> campaigns)
